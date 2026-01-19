@@ -1,14 +1,16 @@
+# Blockchain-Based Academic Certificate Issuance & Revocation
 
-# Blockchain Certificate Revocation with Merkle Tree
+## Overview
 
-This project implements a blockchain-based certificate verification and revocation system
-using Ethereum smart contracts and an off-chain Merkle Tree for revocations.
+This project implements a **blockchain-based system for issuing, revoking, and verifying academic certificates** using Ethereum smart contracts and Hardhat.
 
-## Components
-- EducationVerification.sol: University blockchain logic
-- IdentityRegistry.sol: Top-layer identity redirection
-- Merkle tree off-chain builder
-- Demo scripts (issue, revoke, verify)
+The goal is to provide:
+- **Tamper-proof issuance**
+- **Immutable revocation records**
+- **On-chain timestamps**
+- **Cryptographic verification**
+- **Full auditability via blockchain event logs**
 
-## Run
-See README sections below.
+The system is designed for **Distributed Systems & Blockchain coursework**, focusing on correctness, traceability, and trust minimization.
+
+---
