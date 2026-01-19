@@ -3,47 +3,81 @@ pragma solidity ^0.8.20;
 
 contract EducationVerification {
     address public university;
-    bytes32 public revocationMerkleRoot;
 
-    constructor() {
-        university = msg.sender;
+    struct Certificate {
+        uint256 issuedAt;
+        uint256 revokedAt; // 0 = not revoked
+        bool exists;
     }
+
+    mapping(bytes32 => Certificate) public certificates;
+
+    event CertificateIssued(bytes32 indexed certHash, uint256 timestamp);
+    event CertificateRevoked(bytes32 indexed certHash, uint256 timestamp);
 
     modifier onlyUniversity() {
         require(msg.sender == university, "Not authorized");
         _;
     }
 
-    function revokeCertificate(bytes32 newRoot) external onlyUniversity {
-        revocationMerkleRoot = newRoot;
+    constructor() {
+        university = msg.sender;
     }
 
-    function verify(bytes32 leaf, bytes32[] calldata proof)
+    function issueCertificate(string calldata certId) external onlyUniversity {
+        bytes32 certHash = keccak256(abi.encodePacked(certId));
+        require(!certificates[certHash].exists, "Already issued");
+
+        certificates[certHash] = Certificate(
+            block.timestamp,
+            0,
+            true
+        );
+
+        emit CertificateIssued(certHash, block.timestamp);
+    }
+
+    function revokeCertificate(string calldata certId) external onlyUniversity {
+        bytes32 certHash = keccak256(abi.encodePacked(certId));
+        require(certificates[certHash].exists, "Not issued");
+        require(certificates[certHash].revokedAt == 0, "Already revoked");
+
+        certificates[certHash].revokedAt = block.timestamp;
+
+        emit CertificateRevoked(certHash, block.timestamp);
+    }
+
+    function verifyCertificate(string memory certId)
         external
         view
-        returns (bool)
+        returns (
+            bool valid,
+            bool revoked,
+            uint256 issuedAt,
+            uint256 revokedAt
+        )
     {
-        // ✅ SINGLE-LEAF TREE CASE (CRITICAL FIX)
-        if (proof.length == 0) {
-            return leaf == revocationMerkleRoot;
+        bytes32 certHash = keccak256(abi.encodePacked(certId));
+        Certificate memory cert = certificates[certHash];
+
+        if (!cert.exists) {
+            return (false, false, 0, 0);
         }
 
-        bytes32 computedHash = leaf;
-
-        for (uint256 i = 0; i < proof.length; i++) {
-            bytes32 proofElement = proof[i];
-
-            if (computedHash <= proofElement) {
-                computedHash = keccak256(
-                    abi.encodePacked(computedHash, proofElement)
-                );
-            } else {
-                computedHash = keccak256(
-                    abi.encodePacked(proofElement, computedHash)
-                );
-            }
+        if (cert.revokedAt != 0) {
+            return (
+                false,
+                true,
+                cert.issuedAt,
+                cert.revokedAt
+            );
         }
 
-        return computedHash == revocationMerkleRoot;
+        return (
+            true,
+            false,
+            cert.issuedAt,
+            0
+        );
     }
 }

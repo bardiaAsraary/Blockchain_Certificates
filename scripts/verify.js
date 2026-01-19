@@ -1,26 +1,32 @@
-const { MerkleTree } = require("merkletreejs");
-const keccak256 = require("keccak256");
 const fs = require("fs");
 const { ethers } = require("ethers");
 
-(async () => {
-  const doc = process.argv[2];
-  const revoked = JSON.parse(fs.readFileSync("scripts/revoked.json"));
-  const leaves = revoked.map(x => keccak256(x));
-  const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
+async function main() {
+  const certId = process.argv[2];
+  if (!certId) {
+    console.log("Usage: node verify.js <CERT_ID>");
+    return;
+  }
 
-  const leaf = keccak256(doc);
-  const proof = tree.getHexProof(leaf);
-
-  const addresses = require("./contract_addresses.json");
-
+  const deployed = JSON.parse(fs.readFileSync("deployed.json"));
   const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
+
+  const abi = [
+    "function verifyCertificate(string memory) view returns (bool issued, bool revoked, uint256 issuedAt, uint256 revokedAt)"
+  ];
+
   const contract = new ethers.Contract(
-    addresses.education,
-    ["function verify(bytes32 leaf, bytes32[] calldata proof) public view returns (bool)"],
+    deployed.EducationVerification,
+    abi,
     provider
   );
 
-  const revokedOnChain = await contract.verify(leaf, proof);
-  console.log(revokedOnChain ? "❌ REVOKED" : "✅ VALID");
-})();
+  const result = await contract.verifyCertificate(certId);
+
+  console.log("Issued:", result[0]);
+  console.log("Revoked:", result[1]);
+  console.log("Issued At:", result[2].toString());
+  console.log("Revoked At:", result[3].toString());
+}
+
+main();

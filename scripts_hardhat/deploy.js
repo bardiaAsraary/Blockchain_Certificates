@@ -1,29 +1,24 @@
+const fs = require("fs");
+
 async function main() {
-  const IdentityRegistry = await ethers.getContractFactory("IdentityRegistry");
-  const identity = await IdentityRegistry.deploy();
-  await identity.waitForDeployment();
-  const identityAddress = await identity.getAddress();
-
-  console.log("IdentityRegistry:", identityAddress);
-
   const EducationVerification = await ethers.getContractFactory("EducationVerification");
-  const edu = await EducationVerification.deploy();   // ⚠️ NO ARGUMENTS
-  await edu.waitForDeployment();
-  const eduAddress = await edu.getAddress();
+  const education = await EducationVerification.deploy(); // ❗ بدون آرگومان
+  await education.waitForDeployment();
 
-  console.log("EducationVerification:", eduAddress);
+  const deployed = {
+    EducationVerification: education.target
+  };
 
-  const fs = require("fs");
   fs.writeFileSync(
-    "scripts/contract_addresses.json",
-    JSON.stringify({
-      identity: identityAddress,
-      education: eduAddress
-    }, null, 2)
+    "deployed.json",
+    JSON.stringify(deployed, null, 2)
   );
+
+  console.log("EducationVerification:", education.target);
+  console.log("Saved to deployed.json");
 }
 
 main().catch((error) => {
   console.error(error);
-  process.exit(1);
+  process.exitCode = 1;
 });
