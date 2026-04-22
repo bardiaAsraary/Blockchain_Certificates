@@ -31,6 +31,121 @@ This project solves those issues by leveraging blockchain, where certificates ar
 
 ---
 
+cat << 'EOF' >> README.md
+
+---
+
+## 🔧 Installation & Setup
+
+Follow these steps to set up the project locally.
+
+---
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/bardiaAsraary/Blockchain_Certificates.git
+cd Blockchain_Certificates
+```
+
+---
+
+### 2. Install Dependencies
+
+Make sure you have **Node.js (v16 or higher)** and **npm** installed.
+
+Then run:
+
+```bash
+npm install
+```
+
+This will install all required packages, including:
+- Hardhat for smart contract development  
+- Ethers.js for blockchain interaction  
+- merkletreejs for revocation tree structure  
+- keccak256 for cryptographic hashing  
+
+---
+
+### 3. Compile Smart Contracts
+
+```bash
+npm run build
+```
+
+---
+
+### 4. Start a Local Blockchain
+
+Run a local Ethereum node using Hardhat:
+
+```bash
+npx hardhat node
+```
+
+This will start a development blockchain at:
+
+```
+http://127.0.0.1:8545
+```
+
+---
+
+### 5. Deploy Smart Contracts
+
+In a new terminal, deploy your contracts:
+
+```bash
+npx hardhat run scripts/deploy.js --network localhost
+```
+
+After deployment, note the contract address for interaction.
+
+---
+
+### 6. Running Scripts / Interacting
+
+You can run project scripts using:
+
+```bash
+npx hardhat run scripts/<your-script>.js --network localhost
+```
+
+This is typically used for:
+- Issuing certificates  
+- Generating Merkle trees  
+- Revoking certificates  
+- Verifying proofs  
+
+---
+
+## ✅ Requirements
+
+- Node.js ≥ 16  
+- npm ≥ 8  
+- Hardhat  
+- Local Ethereum network (Hardhat node)  
+
+---
+
+## 💡 Notes
+
+- This project uses a **Merkle Tree** to manage certificate revocation  
+- Certificate hashes are stored on-chain, while proofs are handled off-chain  
+- Use test accounts only  
+
+---
+
+## ⚠️ Common Issues
+
+- Compilation errors → Check Solidity version in hardhat.config.js  
+- Deployment fails → Ensure Hardhat node is running  
+- Module not found → Run npm install again  
+
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Blockchain**: Ethereum / Bitcoin / Local Blockchain  
