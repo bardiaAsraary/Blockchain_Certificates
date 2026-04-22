@@ -1,4 +1,3 @@
-cat << 'EOF' > README.md
 # 📜 Blockchain Certificates
 
 A decentralized application for issuing, storing, and verifying digital certificates using blockchain technology.
@@ -108,5 +107,3 @@ Blockchain ensures:
 - 🌍 Multi-chain support  
 - 🔑 Decentralized identity (DID) integration  
 - 📊 Dashboard for certificate analytics  
-
-EOF
