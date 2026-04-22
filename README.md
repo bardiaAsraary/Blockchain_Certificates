@@ -58,29 +58,6 @@ This project solves those issues by leveraging blockchain, where certificates ar
 
 ---
 
-## 📦 Installation
-
-\`\`\`bash
-git clone https://github.com/bardiaAsraary/Blockchain_Certificates.git
-cd Blockchain_Certificates
-\`\`\`
-
-### Install dependencies
-
-\`\`\`bash
-npm install
-\`\`\`
-
-### Run the project
-
-\`\`\`bash
-npm start
-\`\`\`
-
-*(Adjust commands based on your actual setup)*
-
----
-
 ## 🧪 Usage
 
 - Issue a certificate through the system  
